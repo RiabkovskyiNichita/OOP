@@ -1,0 +1,124 @@
+class Student:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+        self.faculty = None
+
+    def assign_to_faculty(self, faculty):
+        self.faculty = faculty
+
+    def graduate(self):
+        self.faculty = None
+
+    def __str__(self):
+        return f"Name: {self.name}, Email: {self.email}, Faculty: {self.faculty}"
+
+
+class Faculty:
+    def __init__(self, name):
+        self.name = name
+        self.students = []
+
+    def enroll_student(self, student):
+        self.students.append(student)
+
+    def graduate_student(self, student):
+        self.students.remove(student)
+
+
+class University:
+    def __init__(self):
+        self.faculties = []
+        self.students = []
+
+    def create_faculty(self, name):
+        faculty = Faculty(name)
+        self.faculties.append(faculty)
+        return faculty
+
+    def enroll_student(self, student):
+        self.students.append(student)
+
+    def assign_student_to_faculty(self, student, faculty):
+        student.assign_to_faculty(faculty)
+        faculty.enroll_student(student)
+
+    def graduate_student(self, student):
+        student.graduate()
+
+    def display_enrolled_students(self):
+        for student in self.students:
+            if student.faculty:
+                print(student)
+
+    def display_graduates(self):
+        for student in self.students:
+            if not student.faculty:
+                print(student)
+
+
+def main():
+    tum = University()
+
+    while True:
+        print("\nTUM Student Management System")
+        print("1. Enroll a student")
+        print("2. Create a faculty")
+        print("3. Assign a student to a faculty")
+        print("4. Graduate a student")
+        print("5. Display enrolled students")
+        print("6. Display graduates")
+        print("7. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            name = input("Enter student name: ")
+            email = input("Enter student email: ")
+            student = Student(name, email)
+            tum.enroll_student(student)
+            print("Student enrolled successfully.")
+
+        elif choice == "2":
+            name = input("Enter faculty name: ")
+            tum.create_faculty(name)
+            print("Faculty created successfully.")
+
+        elif choice == "3":
+            if not tum.students:
+                print("No students enrolled yet.")
+                continue
+            student_index = int(input("Enter student index: "))
+            faculty_index = int(input("Enter faculty index: "))
+            student = tum.students[student_index]
+            faculty = tum.faculties[faculty_index]
+            tum.assign_student_to_faculty(student, faculty)
+            print("Student assigned to faculty successfully.")
+
+        elif choice == "4":
+            if not tum.students:
+                print("No students enrolled yet.")
+                continue
+            index = int(input("Enter student index to graduate: "))
+            student = tum.students[index]
+            tum.graduate_student(student)
+            print("Student graduated successfully.")
+
+        elif choice == "5":
+            print("\nEnrolled Students:")
+            tum.display_enrolled_students()
+
+        elif choice == "6":
+            print("\nGraduates:")
+            tum.display_graduates()
+
+        elif choice == "7":
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
